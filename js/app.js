@@ -29,6 +29,9 @@ function eventListeners() {
             } else {
                 const insurance = new Insurance(make, year, level);
                 const price = insurance.calculateQuotation(insurance);
+
+                // Prtint result into HTMLUI
+                html.showResults(price);
             }
         });
 
@@ -68,13 +71,33 @@ Insurance.prototype.calculateQuotation = function(insurance) {
     // Each year the cost of insurance is going to be 3% cheaper
     price = price - ((difference * 3) * price) /100;
 
-    console.log(price);
+    // Chck the level of protection
 
+    const level = insurance.level;
 
+    price = this.calculateLevel(price, level)
+
+    return price;
 }
 
 Insurance.prototype.getYearDifference = function(year) {
     return new Date().getFullYear() - this.year;
+}
+
+// Adds the price based  on the level
+Insurance.prototype.calculateLevel = function(price, level) {
+
+    /*
+     Bacis insurance is going to increasethe value by 30%
+     Complete Insurance is going to increase the value by 50%
+    */
+
+    if(level === 'basic') {
+        price = price * 1.30;
+    } else {
+        price = price * 1.50;
+    }
+    return price;
 }
 
 // Objects
