@@ -27,11 +27,17 @@ function eventListeners() {
             if(make === '' || year === '' || level ===- '') {
                 html.displayError('All the fields are mandatory')
             } else {
+                // Clear rthe previous quotes
+                const prevResult = document.querySelector('#result div');
+                if(prevResult != null) {
+                    prevResult.remove();
+                }
+
                 const insurance = new Insurance(make, year, level);
                 const price = insurance.calculateQuotation(insurance);
 
                 // Prtint result into HTMLUI
-                html.showResults(price);
+                html.showResults(price, insurance);
             }
         });
 
@@ -144,14 +150,43 @@ HTMLUI.prototype.displayError = function(message) {
 }
 
 //Prints the result into the HTMLUI
-HTMLUI.prototype.showResults = function(price) {
+HTMLUI.prototype.showResults = function(price, insurance) {
     const result = document.getElementById('result');
 
     const div = document.createElement('div');
 
+    let make = insurance.make;
+
+    // Get make form the object and assign a readable name
+
+    switch(make) {
+        case '1':
+            make = 'American';
+            break;
+        case '2':
+            make = 'Asian';
+            break;
+            case '3':
+            make = 'European';
+            break;
+    }
+
+    
+
     div.innerHTML = `
+        <p class="header">Summary</p>
+        <p>Make: ${make}</p>
+        <p>Year: ${insurance.year}</p>
+        <p>Level: ${insurance.level}</p>
         <p class="total">Total: $ ${price}</p>
     `;
 
-    result.appendChild(div);
+    const spinner = document.querySelector('#loading img');
+    spinner.style.display = 'block';
+
+    setTimeout(function() {
+        spinner.style.display = 'none';
+        result.appendChild(div);
+    }, 3000)
+
 }
